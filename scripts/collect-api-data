@@ -2,8 +2,8 @@
 <?php
 $collection = [];
 
-api_collect("http://10.201.87.201/ptp/proxy/QmdoX2kxj863SG4m7VVPk21a26XzX8U2nCQXk6MUZ57GQu/GetWorkerStatus");
-api_collect("http://10.201.87.202/ptp/proxy/QmYdvMgZDchUqahvnj5d75Gu6PjSBfzFfe9tEzCtovDtiX/GetWorkerStatus");
+api_collect("http://10.201.87.201/ptp/proxy/REPLACE-WITH-DATAPROVIDER-ID/GetWorkerStatus");
+api_collect("http://10.201.87.202/ptp/proxy/REPLACE-WITH-DATAPROVIDER-ID2/GetWorkerStatus");
 
 file_put_contents('/tmp/api_cache.json.new', json_encode($collection));
 rename('/tmp/api_cache.json.new', '/tmp/api_cache.json');

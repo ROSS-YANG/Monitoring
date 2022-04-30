@@ -2,9 +2,8 @@
 <?php
 $collection = [];
 
-api_collect("http://10.201.87.201/ptp/proxy/QmdoX2kxj863SG4m7VVPk21a26XzX8U2nCQXk6MUZ57GQu/");
-api_collect("http://10.201.87.202/ptp/proxy/QmYdvMgZDchUqahvnj5d75Gu6PjSBfzFfe9tEzCtovDtiX/");
-
+api_collect("http://10.201.87.201/ptp/proxy/REPLACE-WITH-DATAPROVIDER-ID/GetWorkerStatus");
+api_collect("http://10.201.87.202/ptp/proxy/REPLACE-WITH-DATAPROVIDER-ID2/GetWorkerStatus");
 
 foreach ($collection as $worker => $workerData) {
         check_worker($worker, $workerData);

@@ -9,8 +9,8 @@ $paraHeaderSynchedToTime = time();
 
 $startupTime = time();
 
-$results_one = collect('http://10.201.87.201/ptp/proxy/QmdoX2kxj863SG4m7VVPk21a26XzX8U2nCQXk6MUZ57GQu/GetWorkerStatus');
-$results_two = collect('http://10.201.87.202/ptp/proxy/QmYdvMgZDchUqahvnj5d75Gu6PjSBfzFfe9tEzCtovDtiX/GetWorkerStatus');
+$results_one = collect('http://10.201.87.201/ptp/proxy/REPLACE-WITH-DATAPROVIDER-ID/GetWorkerStatus');
+$results_two = collect('http://10.201.87.202/ptp/proxy/REPLACE-WITH-DATAPROVIDER-ID2/GetWorkerStatus');
 
 echo date("Y-m-d H:i:s") . " $results_one + $results_two = " . ($results_one + $results_two) . PHP_EOL;
 
