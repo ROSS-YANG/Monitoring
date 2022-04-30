@@ -1,0 +1,53 @@
+#!/usr/bin/php
+<?php
+$stats = [];
+
+$parentHeaderSynchedTo = 0;
+$parentHeaderSynchedToTime = time();
+$paraHeaderSynchedTo = 0;
+$paraHeaderSynchedToTime = time();
+
+$startupTime = time();
+
+$results_one = collect('http://10.201.87.201/ptp/proxy/QmdoX2kxj863SG4m7VVPk21a26XzX8U2nCQXk6MUZ57GQu/GetWorkerStatus');
+$results_two = collect('http://10.201.87.202/ptp/proxy/QmYdvMgZDchUqahvnj5d75Gu6PjSBfzFfe9tEzCtovDtiX/GetWorkerStatus');
+
+echo date("Y-m-d H:i:s") . " $results_one + $results_two = " . ($results_one + $results_two) . PHP_EOL;
+
+function collect($url) {
+    $total = 0;
+
+    $line = file_get_contents($url);
+    $result = json_decode($line, true);
+
+    if (json_last_error() === JSON_ERROR_NONE) {
+            $miningStart = '1631984898';
+            $miningNow = time();
+            $miningDiff = $miningNow - $miningStart;
+
+            if (!empty($result["data"]["workerStates"][0]["worker"]["name"])) {
+                    $totalRewards = 0;
+                    foreach ($result["data"]["workerStates"] as $worker) {
+
+                        $subresult = json_decode($worker["minerInfoJson"], true);
+
+                        if(empty($subresult["stats"]["totalReward"])) {
+                                $subresult["stats"]["totalReward"] = 0;
+                        }
+                        $subresult["stats"]["totalReward"] = str_replace(' mPHA', '', $subresult["stats"]["totalReward"], $count);
+                        if ($count > 0) {
+                                $subresult["stats"]["totalReward"] = $subresult["stats"]["totalReward"] / 1000;
+                        }
+
+                        $subresult["stats"]["totalReward"] = str_replace(' PHA', '', $subresult["stats"]["totalReward"]);
+                        $subresult["stats"]["totalReward"] = round(str_replace(",", "", $subresult["stats"]["totalReward"]) / 1000000000000, 12);
+
+
+                        $total += $subresult["stats"]["totalReward"];
+                    }
+            }
+    }
+    return $total;
+}
+?>
+

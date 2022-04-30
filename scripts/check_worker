@@ -1,0 +1,25 @@
+#!/usr/bin/php
+<?php
+$json = json_decode(file_get_contents('/tmp/api_cache.json'), true);
+
+$options = getopt("h:x:");
+$host = $options['h'];
+
+if (!empty($json[$host])) {
+        if ($json[$host]['status'] == "S_SYNCHING" && $json[$host]['synced_to'] == "-1") {
+                echo "$host is stuck at syncing";
+                exit(2);
+        }
+
+        if ($json[$host]['status'] == "S_ERROR") {
+                echo "$host is in S_ERROR state";
+                exit(2);
+        }
+
+        echo "$host is {$json[$host]['status']} at {$json[$host]['synced_to']}";
+} else {
+        echo "$host has no data";
+        exit(2);
+}
+?>
+

@@ -1,0 +1,51 @@
+#!/usr/bin/php
+<?php
+$collection = [];
+
+api_collect("http://10.201.87.201/ptp/proxy/QmdoX2kxj863SG4m7VVPk21a26XzX8U2nCQXk6MUZ57GQu/");
+api_collect("http://10.201.87.202/ptp/proxy/QmYdvMgZDchUqahvnj5d75Gu6PjSBfzFfe9tEzCtovDtiX/");
+
+
+foreach ($collection as $worker => $workerData) {
+        check_worker($worker, $workerData);
+}
+file_put_contents('/tmp/api_cache.json', json_encode($collection));
+
+function api_collect($url) {
+        $data = file_get_contents($url . "GetWorkerStatus");
+        $json = json_decode($data, true);
+        if ($json === null && json_last_error() !== JSON_ERROR_NONE) {
+                echo "incorrect data";
+        }
+
+        foreach ($json['data']['workerStates'] as $worker) {
+                if (empty($worker['paraHeaderSynchedTo'])) {
+                        $worker['paraHeaderSynchedTo'] = 'none';
+                }
+
+                if (empty($worker['paraBlockDispatchedTo'])) {
+                        $worker['paraBlockDispatchedTo'] = '-1';
+                }
+
+                $GLOBALS['collection'][$worker['worker']['name']] = [
+                        'status'        => $worker['status'],
+                        'uuid'          => $worker['worker']['uuid'],
+                        'synced_to'     => $worker['paraBlockDispatchedTo'],
+                        'parent'        => $url,
+                ];
+        }
+}
+
+function check_worker($worker, $workerData) {
+        if ($workerData['status'] == "S_SYNCHING" && $workerData['synced_to'] == "-1") {
+                echo "$worker" . PHP_EOL;
+        }
+
+        if ($workerData['status'] == "S_ERROR") {
+                echo "$worker" . PHP_EOL;
+        }
+
+}
+
+?>
+

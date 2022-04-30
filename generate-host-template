@@ -1,0 +1,18 @@
+#!/usr/bin/php
+<?php
+$machines = file('/root/all-generated-machines');
+
+foreach ($machines as $machine) {
+        $machine = trim($machine);
+
+        echo "object Host \"$machine\" {
+  import \"generic-host\"
+  address = \"$machine\"
+  vars.os = \"Linux\"
+
+}
+
+";
+}
+?>
+

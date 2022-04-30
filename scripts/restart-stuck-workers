@@ -1,0 +1,84 @@
+#!/usr/bin/php
+<?php
+$collection = [];
+
+api_collect("http://10.201.87.201/ptp/proxy/QmdoX2kxj863SG4m7VVPk21a26XzX8U2nCQXk6MUZ57GQu/");
+api_collect("http://10.201.87.202/ptp/proxy/QmYdvMgZDchUqahvnj5d75Gu6PjSBfzFfe9tEzCtovDtiX/");
+
+
+foreach ($collection as $worker => $workerData) {
+        check_worker($worker, $workerData);
+}
+file_put_contents('/tmp/api_cache.json', json_encode($collection));
+
+function api_collect($url) {
+        $data = file_get_contents($url . "GetWorkerStatus");
+        $json = json_decode($data, true);
+        if ($json === null && json_last_error() !== JSON_ERROR_NONE) {
+                echo "incorrect data";
+        }
+
+        foreach ($json['data']['workerStates'] as $worker) {
+                if (empty($worker['paraHeaderSynchedTo'])) {
+                        $worker['paraHeaderSynchedTo'] = 'none';
+                }
+
+                if (empty($worker['paraBlockDispatchedTo'])) {
+                        $worker['paraBlockDispatchedTo'] = '-1';
+                }
+
+                $GLOBALS['collection'][$worker['worker']['name']] = [
+                        'status'        => $worker['status'],
+                        'uuid'          => $worker['worker']['uuid'],
+                        'synced_to'     => $worker['paraBlockDispatchedTo'],
+                        'parent'        => $url,
+                ];
+        }
+}
+
+function check_worker($worker, $workerData) {
+        if ($workerData['status'] == "S_SYNCHING" && $workerData['synced_to'] == "-1") {
+                echo "$worker is stuck at syncing" . PHP_EOL;
+                restart_worker($workerData['uuid'], $workerData['parent']);
+        }
+
+        if ($workerData['status'] == "S_ERROR") {
+                echo "$worker is errored" . PHP_EOL;
+                restart_worker($workerData['uuid'], $workerData['parent']);
+        }
+
+}
+
+function restart_worker($workerUUID, $parent) {
+    $arr = [
+            'ids' => [
+                    $workerUUID,
+            ]
+    ];
+    var_dump($arr);
+    $data = json_encode($arr, JSON_UNESCAPED_SLASHES);
+    $headers = ["Content-Type: application/json"];
+    $url = $parent . "RestartWorker";
+
+    $curl = curl_init();
+    curl_setopt_array($curl, array(
+        CURLOPT_URL => $url,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_CUSTOMREQUEST => "POST",
+        CURLOPT_POSTFIELDS => $data,
+    ));
+    if (!empty($headers)) {
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+    }
+    $response = curl_exec($curl);
+    $errno = curl_errno($curl);
+    if ($errno) {
+        return false;
+    }
+    curl_close($curl);
+
+    return $response;
+
+}
+
