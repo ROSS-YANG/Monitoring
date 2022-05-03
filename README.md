@@ -1,5 +1,5 @@
 # Monitoring
-test \n
+test  
 alarms with miner in unexpection state or broken
 
 ## Requiesrments
@@ -17,4 +17,5 @@ in file /etc/cron.d/monitoring
 
 * * * * *       root    /etc/icinga2/scripts/collect-api-data
 
-111111111111122222222222222222
+1111111111111  
+22222222222222222
