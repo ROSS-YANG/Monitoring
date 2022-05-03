@@ -1,5 +1,5 @@
 # Monitoring
-
+test /n
 alarms with miner in unexpection state or broken
 
 ## Requiesrments
