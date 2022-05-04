@@ -8,7 +8,11 @@ https://www.howtoforge.com/how-to-install-icinga-2-monitoring-on-ubuntu-20-04/
 _warning :  
 1.Setup a new ubuntu20.04 system to setup lcinga2    
 2.You can follow the steps below, but ensure that each step is complete without error before proceeding to the next step!_  
+start:  
+sudo su  
 1.  
+sudo apt update  
+sudo apt upgrade  
 curl https://packages.icinga.com/icinga.key | apt-key add -  
 cd /etc/apt/sources.list.d/  
 vim icinga-focal.list  
@@ -64,7 +68,7 @@ grant all privileges on icingaweb2.* to icingaweb2@localhost with grant option;
 flush privileges;  
 exit  
 13.  
-open http://your-IP/icingaweb2/setup and input setp 12 result  
+open http://your-IP/icingaweb2/setup and input setp 11 your copy result  
 ![](./image/13.png)  
 14.  
 choose doc and monitroing  
