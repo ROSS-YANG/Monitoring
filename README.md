@@ -10,8 +10,9 @@ _warning :You can follow the steps below, but ensure that each step is complete 
 curl https://packages.icinga.com/icinga.key | apt-key add -  
 cd /etc/apt/sources.list.d/  
 vim icinga-focal.list  
-2.add and save:  
-deb http://packages.icinga.com/ubuntu icinga-focal main
+2.  
+(add and save: ) 
+deb http://packages.icinga.com/ubuntu icinga-focal main  
 deb-src http://packages.icinga.com/ubuntu icinga-focal main  
 3.  
 sudo apt update  
@@ -21,8 +22,8 @@ systemctl enable icinga2
 sudo apt install mysql-server mysql-client   
 systemctl start mysql  
 systemctl enable mysql  
-4.
-mysql_secure_installation  
+4.  
+mysql_secure_installation   
 ![](./image/4-1.png)  
 ![](./image/4-2.png)
 5.  
@@ -36,17 +37,106 @@ exit
 7.  
 icinga2 feature enable ido-mysql  
 icinga2 feature list
+![](./image/7-1.png)
+8.  
+systemctl restart icinga2  
+sudo apt install python3-software-properties  
+sudo add-apt-repository ppa:ondrej/php (Remember to press enter )  
+9.  
+sudo apt install apache2 php7.3 php7.3-common php7.3-gd php7.3-ldap php7.3-intl php7.3-curl libapache2-mod-php7.3 php7.3-mysql php7.3-pgsql php7.3-xml  
+10.  
+vim /etc/php/7.3/apache2/php.ini   (set date.timezone = Asia/ShangHai
+,cgi.fix_pathinfo=0)
+![](./image/10-1.png)
+![](./image/10-2.png)
+11.  
+systemctl restart apache2  
+systemctl enable apache2  
+sudo apt install icingaweb2 icingacli  
+.icingacli setup token create (copy The newly generated setup token is: 9b871ead0a60c94f)  
+12.  
+mysql -u root -p  
+create database icingaweb2;  
+create user icingaweb2@localhost identified with mysql_native_password by "icingaweb2pass";  
+grant all privileges on icingaweb2.* to icingaweb2@localhost with grant option;  
+flush privileges;  
+exit  
+13.  
+open http://your-IP/icingaweb2/setup and input setp 12 result  
+![](./image/13.png)  
+14.  
+choose doc and monitroing  
+![](./image/14.png)
+15.  
+Will see Two modules are missing 
+![](./image/15.png)
+16.  
+next
+![](./image/16.png)
+17.  
+config icingawb2 database (Except for the password you set in step 12, everything else is the same, remember to verify)
+![](./image/17.png)
+18.  
+next  
+![](./image/18.png)
+19.  
+Set your password for logging in to web pages  
+![](./image/19.png)
+20. 
+next  
+![](./image/20.png)
+21.  
+next  
+![](./image/21.png)
+22.  
+next  
+![](./image/22.png)
+23.  
+config icinga2 database(Except for the password you set in step 6, everything else is the same, remember to verify)
+![](./image/23.png)
+24. 
+Transport Type set Local Command File
+![](./image/24.png)
+25. 
+next  
+![](./image/25.png)
+26.  
+next
+![](./image/26.png)
+27. 
+icinga2 setup done  
+you can open http://your-IP/icingaweb2/authentication/login login
+![](./image/27.png)
+28.  
+sudo su  
+cd /root/
+sudo apt install git  
+git clone https://github.com/PHA-SYSOPS/Monitoring.git  
+cp ./Monitoring/all-generated-machines ./  
+29.   
+vim /root/all-generated-machines (add machines hostname)  
+30.   
+cd /root/Monitoring  
+chmod 777  generate-host-template  
+./generate-host-template > /etc/icinga2/conf.d/miners.conf  
+cd scripts/  
+chmod 777 collect-api-data  
+chmod 777 check_worker  
+vim collect-api-data  
+30.  
+Edit api_collect("http://10.201.87.201/ptp/proxy/REPLACE-WITH-DATAPROVIDER-ID/GetWorkerStatus");    
+31.  
+cp /root/Monitoring/scripts/* /etc/icinga2/scripts/  
+cp /root/Monitoring/conf.d/* /etc/icinga2/conf.d/  
+crontab -e  
+32.  
+add  and save :  
+* * * * * /etc/icinga2/scripts/collect-api-data   
+33.  
+systemctl restart icinga2  
+  
 
-## generate templete
-generate miners template with all workers:
-
-./genconf2 > /etc/icinga2/conf.d/miners.conf
-
-## add CRon
-
-in file /etc/cron.d/monitoring
-
-* * * * *       root    /etc/icinga2/scripts/collect-api-data
-
-1111111111111  
-22222222222222222
+all setup done  
+finally :  
+open http://your-IP/icingaweb2/authentication/login  check   
+![](./image/finally.png)
