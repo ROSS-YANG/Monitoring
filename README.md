@@ -5,13 +5,15 @@
 Install Icinga2 with Mysql and web modules, e.g. with:
 https://www.howtoforge.com/how-to-install-icinga-2-monitoring-on-ubuntu-20-04/    
 
-_warning :You can follow the steps below, but ensure that each step is complete without error before proceeding to the next step!_  
+_warning :  
+1.Setup a new ubuntu20.04 system to setup lcinga2    
+2.You can follow the steps below, but ensure that each step is complete without error before proceeding to the next step!_  
 1.  
 curl https://packages.icinga.com/icinga.key | apt-key add -  
 cd /etc/apt/sources.list.d/  
 vim icinga-focal.list  
 2.  
-(add and save: ) 
+(add and save: )   
 deb http://packages.icinga.com/ubuntu icinga-focal main  
 deb-src http://packages.icinga.com/ubuntu icinga-focal main  
 3.  
@@ -30,9 +32,9 @@ mysql_secure_installation
 sudo apt install icinga2-ido-mysql  (choose yes,yes,and set icinga2-ido-passwd)  
 mysql -u root -p  
 6.  
-ALTER USER icinga2@localhost IDENTIFIED WITH mysql_native_password BY 'setpasswd';
+ALTER USER icinga2@localhost IDENTIFIED WITH mysql_native_password BY 'setpasswd';  
 flush privileges;  
-exit
+exit  
 ![](./image/6-1.png)  
 7.  
 icinga2 feature enable ido-mysql  
@@ -103,17 +105,17 @@ next
 26.  
 next
 ![](./image/26.png)
-27. 
-icinga2 setup done  
+27.  
+icinga2 setup done!!!   
 you can open http://your-IP/icingaweb2/authentication/login login
 ![](./image/27.png)
 28.  
 sudo su  
-cd /root/
+29.   
+cd /root/  
 sudo apt install git  
 git clone https://github.com/PHA-SYSOPS/Monitoring.git  
 cp ./Monitoring/all-generated-machines ./  
-29.   
 vim /root/all-generated-machines (add machines hostname)  
 30.   
 cd /root/Monitoring  
@@ -129,14 +131,12 @@ Edit api_collect("http://10.201.87.201/ptp/proxy/REPLACE-WITH-DATAPROVIDER-ID/Ge
 cp /root/Monitoring/scripts/* /etc/icinga2/scripts/  
 cp /root/Monitoring/conf.d/* /etc/icinga2/conf.d/  
 crontab -e  
-32.  
-add  and save :  
-* * * * * /etc/icinga2/scripts/collect-api-data   
+32.   
+add and save :  
+* * * * * /etc/icinga2/scripts/collect-api-data  
 33.  
 systemctl restart icinga2  
-  
-
-all setup done  
+all setup done !!!!!  
 finally :  
-open http://your-IP/icingaweb2/authentication/login  check   
+open http://your-IP/icingaweb2/authentication/login check  
 ![](./image/finally.png)
