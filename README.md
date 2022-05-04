@@ -130,7 +130,8 @@ chmod 777 collect-api-data
 chmod 777 check_worker  
 vim collect-api-data  
 30.  
-Edit api_collect("http://10.201.87.201/ptp/proxy/REPLACE-WITH-DATAPROVIDER-ID/GetWorkerStatus");    
+Edit and save :  
+ api_collect("http://10.201.87.201/ptp/proxy/REPLACE-WITH-DATAPROVIDER-ID/GetWorkerStatus");    
 31.  
 cp /root/Monitoring/scripts/* /etc/icinga2/scripts/  
 cp /root/Monitoring/conf.d/* /etc/icinga2/conf.d/  
