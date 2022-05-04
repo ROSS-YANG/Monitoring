@@ -55,7 +55,7 @@ vim /etc/php/7.3/apache2/php.ini   (set date.timezone = Asia/ShangHai
 systemctl restart apache2  
 systemctl enable apache2  
 sudo apt install icingaweb2 icingacli  
-.icingacli setup token create (copy The newly generated setup token is: 9b871ead0a60c94f)  
+icingacli setup token create (copy The newly generated setup token is: 9b871ead0a60c94f)  
 12.  
 mysql -u root -p  
 create database icingaweb2;  
